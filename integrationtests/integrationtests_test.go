@@ -31,3 +31,20 @@ func TestScenariosSetUpNodes(t *testing.T) {
     }
   }
 }
+
+func TestRunProcess(t *testing.T) {
+  n := node.New("url")
+  if err := n.RunProcess("heartbeatListener"); err != nil {
+    t.Error("heartbeatListener can only be run in follower state")
+  }
+  
+  n.State = "leader"
+  if err := n.RunProcess("heartbeatPublisher"); err != nil {
+    t.Error("heartbeatPublisher can only be run in leader state")
+  }
+
+  n.State = "candidate"
+  if err := n.RunProcess("election"); err != nil {
+    t.Error("heartbeatPublisher can only be run in candidate state")
+  }
+}
