@@ -1,18 +1,31 @@
 package node
 
-import "fmt"
+import (
+	"fmt"
+	"time"
 
-func New(url string) *Node {
+  "mock-network-golang/basenode"
+  "mock-network-golang/network"
+)
+
+func New(url string, n *network.Network) *Node {
   return &Node{
-    Url: url,
     State: "follower",
+    HeartbeatTimeout: time.Second * 5,
+    baseNode: *basenode.New(url, n),
   }
 }
 
 type Node struct {
-  Url string
   State string
   OtherNodesUrls []string
+  HeartbeatTimeout time.Duration
+  baseNode basenode.Basenode
+  timeoutChannel chan bool
+}
+
+func (n *Node) GetUrl() string {
+  return n.baseNode.HostUrl
 }
 
 func (n *Node) RegisterNode(url string) {
@@ -45,7 +58,7 @@ func (n *Node) RunProcess(name string) error {
 }
 
 func (n *Node) heartbeatListener() {
-
+  
 }
 
 func (n *Node) heartbeatPublisher() {
